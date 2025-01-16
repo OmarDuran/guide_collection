@@ -148,7 +148,7 @@ In this guide, we will create a C++ program that uses OpenMP for parallel proces
             }
         }
     ]
-}
+    }
    ```
 
 ## Step 5: Build the Program
