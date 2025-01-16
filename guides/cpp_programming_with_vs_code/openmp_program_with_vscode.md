@@ -168,4 +168,3 @@ In this guide, we will create a C++ program that uses OpenMP for parallel proces
 ## Summary 
 
 You have successfully created, compiled, and set up debugging for an OpenMP-enabled C++ program using Visual Studio Code on macOS.
-```
