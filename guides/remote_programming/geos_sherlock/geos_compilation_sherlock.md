@@ -246,7 +246,7 @@ Sherlock OnDemand ([link](https://ondemand.sherlock.stanford.edu/pun/sys/dashboa
 
 3. Finally, click **Launch**.
 
-The system will notify you by email when your session is ready if you select the option "I would like to receive an email when the session starts." Once notified, connect to the application, and your interactive VSCode session will start in a new browser tab.
+The system will notify you by email when your session is ready if you select the option "I would like to receive an email when the session starts." Once the session is ready, connect to the code-server application, and your interactive VSCode session will start in a new browser tab.
 
 ### Opening the GEOS Folder
 
