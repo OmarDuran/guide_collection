@@ -128,7 +128,7 @@ cd ..
 
 ## Creating an SBATCH Script
 
-This procedure can be combined into an `sbatch` script to request resources and execute the above steps sequentially. Below is an example of how the `sbatch` script should look:
+This procedure can be combined into a `compile_tpls.sbatch ` script to request resources and execute the steps above sequentially. Below is an example of how the sbatch script should look:
 
 ```bash
 #!/bin/bash
@@ -179,6 +179,41 @@ make
 cd build-sherlock-custom-release/ || { echo "Failed to enter build-sherlock-custom-release directory"; exit 1; }
 make
 ```
+## Compiling TPls with the SBATCH Script
+
+
+The `compile_tpls.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
+
+```bash
+sbatch compile_tpls.sbatch
+```
+It will create a unique identifier for the process (for instance, 58367115) for further reference to the process.
+
+You will receive an email confirmation upon the completion or failure of the job. Below is an example of a typical email notification:
+
+```bash
+Job ID: 58367115
+Cluster: sherlock
+User/Group: oduran/tchelepi
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 4
+CPU Utilized: 00:01:00
+CPU Efficiency: 12.82% of 00:07:48 core-walltime
+Job Wall-clock time: 00:01:57
+Memory Utilized: 26.55 MB
+Memory Efficiency: 0.32% of 8.00 GB
+```
+
+If the process is still active, you may connect to Sherlock at any time and execute the following command:
+
+```bash
+tail -f job_tpls_output_58367115.log
+```
+
+to monitor the output of the process.
+
+
 
 ## Summary TPLs compilation 
 Follow the steps above to successfully compile GEOS TPLs on the Sherlock environment. 
