@@ -1,4 +1,4 @@
-# GEOS Compilation with Sherlock
+# GEOS Compilation on Sherlock
 
 ## Overview
 This guide outlines the steps necessary to compile the GEOS simulator on the Stanford Sherlock cluster. It covers the configuration, installation, and execution of the simulator in debug mode using VSCode within interactive sessions on the cluster.
