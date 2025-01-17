@@ -174,10 +174,12 @@ python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custo
 # Step 3: Compile TPLs Debug
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
 make
+cd ..
 
 # Step 4: Compile TPLs Release
 cd build-sherlock-custom-release/ || { echo "Failed to enter build-sherlock-custom-release directory"; exit 1; }
 make
+cd ..
 ```
 ## Compiling TPls with the SBATCH Script
 
