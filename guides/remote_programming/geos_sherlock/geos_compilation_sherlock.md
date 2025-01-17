@@ -217,3 +217,126 @@ to monitor the output of the process.
 
 ## Summary TPLs compilation 
 Follow the steps above to successfully compile GEOS TPLs on the Sherlock environment. 
+
+
+# Compiling GEOS in Visual Studio Code
+
+This second part of the guide illustrates how to compile GEOS and run it as a simple application within Visual Studio Code (VSCode). While this method is specifically tailored for VSCode users, similar principles apply for compiling on local machines. Users may need to perform slightly different operations depending on their operating system.
+
+### Using Sherlock OnDemand
+
+Sherlock OnDemand ([link](https://ondemand.sherlock.stanford.edu/pun/sys/dashboard/apps/index)) offers an application called **code-server**, which launches a visual instance of VSCode that is accessible through your browser.
+
+1. **Select code-server** by clicking on it. You will be prompted to allocate computational resources for your session.
+2. **Fill out the request form with the following data**:
+
+   - **Input**:
+     ```
+     system devel math git/2.45.1 git-lfs/2.4.0 gcc/12.4.0 cmake/3.24.2 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
+     ```
+   - **Workspace**:
+     ```
+     /home/users/oduran
+     ```
+
+   - **Partition**: dev
+   - **CPUs**: 4
+   - **Memory (GB)**: 16
+   - **Runtime (in hours)**: 2 
+
+3. Finally, click **Launch**.
+
+The system will notify you by email when your session is ready if you select the option "I would like to receive an email when the session starts." Once notified, connect to the application, and your interactive VSCode session will start in a new browser tab.
+
+### Opening the GEOS Folder
+
+1. In VSCode, select **File** > **Open Folder**.
+2. Enter the path: `/home/groups/tchelepi/oduran/GEOS` and click **OK**.
+
+### Configuring GEOS
+
+1. Press `Ctrl + Shift + P` and select **Open Workspace Settings (JSON)**. This action will create an empty `settings.json` file.
+2. Paste the following content, ensuring the TPLs absolute path is accurate:
+
+```json
+{
+    "cmake": {
+        "sourceDirectory": "${workspaceFolder}/src",
+        "buildDirectory": "${userHome}/geos-build/${buildType}",
+        "installPrefix": "${userHome}/geos-install/${buildType}",
+        "cacheInit": "${workspaceFolder}/host-configs/Stanford/sherlock-custom.cmake", 
+        "configureSettings": {
+            "BLT_MPI_COMMAND_APPEND": "--use-hwthread-cpus;--oversubscribe",
+            "ENABLE_OPENMP": "OFF",
+            "ENABLE_HYPRE": "ON",
+            "ENABLE_TRILINOS": "OFF",
+            "ENABLE_CUDA": "OFF",
+            "GEOS_TPL_DIR": "/home/groups/tchelepi/oduran/thirdPartyLibs/install-sherlock-custom-debug"
+        },
+        "generator": "Unix Makefiles",
+        "useProjectStatusView": false
+    }
+}
+```
+
+3. Press `Ctrl + Shift + P` and select **CMake: Delete Cache and Reconfigure**. If the process is successful, at least the Debug and Release configurations will be available in the CMake icon located on the left toolbar of the VSCode interface.
+
+### Building GEOS in Debug Mode
+
+1. Ensure the **Debug** configuration is selected in the CMake icon.
+2. Determine the number of jobs to pass to `make -j`. Since you requested 4 physical CPUs, it is important to check the CPU configuration using the `lscpu` command for accurate job assignment.
+3. Open the terminal via **View** > **Terminal** and execute:
+   ```bash
+   lscpu
+   ```
+
+   The output will resemble this:
+   ```
+   Architecture:          x86_64
+   CPU op-mode(s):        32-bit, 64-bit
+   Byte Order:            Little Endian
+   CPU(s):                20
+   On-line CPU(s) list:   0-19
+   Thread(s) per core:    1
+   Core(s) per socket:    10
+   Socket(s):             2
+   ...
+   ```
+
+   In this case, `CPU(s) = 20`.
+
+4. Press `Ctrl + Shift + P` and type **CMake: Open CMake Tools Extension**. Locate **CMake: Parallel Jobs** and set the number of jobs to **20**. Then, press `Ctrl + Shift + P` again and select **CMake: Configure**.
+
+5. Build files will be generated in: `/home/users/oduran/geos-build/Debug`.
+
+### Building GEOS
+
+1. Press `Ctrl + Shift + P` and select **CMake: Build**.
+2. Wait for the compilation process to finish (approximately 20 minutes, depending on the requested resources).
+
+### Running GEOS in Debug Mode
+
+1. To run a GEOS example input file in debug mode, press `Ctrl + Shift + P` and select **Debug: Add Configuration**. Choose the **lldb** debugger.
+2. This action will create a `launch.json` file. Replace its contents with the following configuration:
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": 
+    [
+        { 
+            "name": "Debug GEOS",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${userHome}/geos-build/Debug/bin/geosx",
+            "args": ["-i", "${workspaceFolder}/inputFiles/singlePhaseFlow/incompressible_pebi3d.xml", "-o", "../${workspaceFolder}/geos-output"],
+            "cwd": "${workspaceFolder}"
+        }
+    ]    
+}
+```
+
+3. Click the play button on the left toolbar. You should see **Debug GEOS** listed among the configurations. Run the debug mode. It should stop at the first execution line in `main.cpp`. From there, you can set breakpoints and debug as needed.
+
+## Summary GEOS compilation 
+At this point, you have successfully compiled and executed GEOS on the Stanford cluster, Sherlock, utilizing command line tools, various concepts from SLURM, and the VSCode IDE. This guide has covered the compilation and execution of TPLs and GEOS on Sherlock. Please note that different dependency versions and GPU execution are not within the scope of this guide. However, those processes would involve similar operations as described along the sections of this document.
