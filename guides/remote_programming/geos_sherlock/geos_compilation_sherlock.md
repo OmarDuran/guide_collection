@@ -139,7 +139,7 @@ This procedure can be combined into a `compile_tpls.sbatch ` script to request r
 #SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
 #SBATCH --cpus-per-task=4                 # Request 4 CPU cores
 #SBATCH --mem=8G                          # Request 8 GB of memory
-#SBATCH --time=04:00:00                   # Set a time limit of 4.0 hours
+#SBATCH --time=03:00:00                   # Set a time limit of 3.0 hours
 #SBATCH --partition=normal                # Specify the partition
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
@@ -198,11 +198,11 @@ User/Group: oduran/tchelepi
 State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 4
-CPU Utilized: 00:01:00
-CPU Efficiency: 12.82% of 00:07:48 core-walltime
-Job Wall-clock time: 00:01:57
-Memory Utilized: 26.55 MB
-Memory Efficiency: 0.32% of 8.00 GB
+CPU Utilized: 04:34:52
+CPU Efficiency: 45.71% of 10:01:20 core-walltime
+Job Wall-clock time: 02:30:20
+Memory Utilized: 3.31 GB
+Memory Efficiency: 41.33% of 8.00 GB
 ```
 
 If the process is still active, you may connect to Sherlock at any time and execute the following command:
