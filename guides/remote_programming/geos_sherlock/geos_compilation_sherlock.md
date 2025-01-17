@@ -1,7 +1,7 @@
 # GEOS Compilation with Sherlock
 
 ## Overview
-This guide details the steps required to compile the GEOS model on the Sherlock supercomputer, including terminal configuration, installation, execution, and debugging with VSCode in interactive sessions.
+This guide outlines the steps necessary to compile the GEOS simulator on the Stanford Sherlock cluster. It covers the configuration, installation, and execution of the simulator in debug mode using VSCode within interactive sessions on the cluster.
 
 ### Remark
 Note that `GROUP_HOME` is a shared storage device; therefore, each `<SUID>` should create a folder named after its corresponding SUID to maintain user-specific storage and make it easy to identify the folder's owner.
