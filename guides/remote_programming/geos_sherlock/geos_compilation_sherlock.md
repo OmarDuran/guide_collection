@@ -340,3 +340,15 @@ The system will notify you by email when your session is ready if you select the
 
 ## Summary GEOS compilation 
 At this point, you have successfully compiled and executed GEOS on the Stanford cluster, Sherlock, utilizing command line tools, various concepts from SLURM, and the VSCode IDE. This guide has covered the compilation and execution of GEOS on Sherlock. Note that different dependency versions and GPU execution are not within the scope of this guide. However, those processes would involve similar operations as described along the sections of this document.
+
+
+## Bibliography 
+
+- [GEOSX Documentation](https://geosx-geosx.readthedocs-hosted.com/en/latest/#)  
+  https://geosx-geosx.readthedocs-hosted.com/en/latest/#
+
+- [Sherlock Documentation](https://www.sherlock.stanford.edu/docs/)  
+  https://www.sherlock.stanford.edu/docs/
+
+- [Visual Studio Code Documentation](https://code.visualstudio.com/docs)  
+  https://code.visualstudio.com/docs
