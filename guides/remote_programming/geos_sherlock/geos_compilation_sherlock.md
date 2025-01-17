@@ -187,7 +187,7 @@ The `compile_tpls.sbatch` file automates the build process. Before running it, c
 ```bash
 sbatch compile_tpls.sbatch
 ```
-It will create a unique identifier for the process (for instance, 58367115) for further reference to the process.
+It will create a unique identifier for the process (for instance, 58367115) for further reference.
 
 You will receive an email confirmation upon the completion or failure of the job. Below is an example of a typical email notification:
 
