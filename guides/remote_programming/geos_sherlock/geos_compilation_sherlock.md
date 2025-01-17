@@ -139,7 +139,7 @@ This procedure can be combined into a `compile_tpls.sbatch ` script to request r
 #SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
 #SBATCH --cpus-per-task=4                 # Request 4 CPU cores
 #SBATCH --mem=8G                          # Request 8 GB of memory
-#SBATCH --time=02:30:00                   # Set a time limit of 2.5 hour
+#SBATCH --time=04:00:00                   # Set a time limit of 4.0 hours
 #SBATCH --partition=normal                # Specify the partition
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
