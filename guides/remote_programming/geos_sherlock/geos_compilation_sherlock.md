@@ -262,8 +262,8 @@ The system will notify you by email when your session is ready if you select the
 {
     "cmake": {
         "sourceDirectory": "${workspaceFolder}/src",
-        "buildDirectory": "${userHome}/geos-build/${buildType}",
-        "installPrefix": "${userHome}/geos-install/${buildType}",
+        "buildDirectory": "${workspaceFolder}/../geos-build/${buildType}",
+        "installPrefix": "${workspaceFolder}/../geos-install/${buildType}",
         "cacheInit": "${workspaceFolder}/host-configs/Stanford/sherlock-custom.cmake", 
         "configureSettings": {
             "BLT_MPI_COMMAND_APPEND": "--use-hwthread-cpus;--oversubscribe",
@@ -307,7 +307,7 @@ The system will notify you by email when your session is ready if you select the
 
 4. Press `Ctrl + Shift + P` and type **CMake: Open CMake Tools Extension**. Locate **CMake: Parallel Jobs** and set the number of jobs to **20**. Then, press `Ctrl + Shift + P` again and select **CMake: Configure**.
 
-5. Build files will be generated in: `/home/users/oduran/geos-build/Debug`.
+5. Build files will be generated in: `/home/groups/tchelepi/oduran/geos-build/Debug`.
 
 ### Building GEOS
 
