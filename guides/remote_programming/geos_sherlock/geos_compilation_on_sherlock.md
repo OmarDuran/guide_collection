@@ -205,11 +205,11 @@ User/Group: suid/tchelepi
 State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 4
-CPU Utilized: 04:34:52
-CPU Efficiency: 45.71% of 10:01:20 core-walltime
-Job Wall-clock time: 02:30:20
-Memory Utilized: 3.31 GB
-Memory Efficiency: 41.33% of 8.00 GB
+CPU Utilized: 03:59:10
+CPU Efficiency: 67.18% of 05:56:00 core-walltime
+Job Wall-clock time: 01:29:00
+Memory Utilized: 3.32 GB
+Memory Efficiency: 41.52% of 8.00 GB
 ```
 
 To monitor the output of the process, if it is still active, you may connect to Sherlock at any time and execute the following command:
@@ -302,6 +302,22 @@ The `compile_geos.sbatch` file automates the build process for GEOS. Before runn
 
 ```bash
 sbatch compile_geos.sbatch
+```
+
+You will receive an email notification indicating the completion or failure of the job. Below there is an example of a typical email notification:
+
+```bash
+Job ID: 58367115
+Cluster: sherlock
+User/Group: suid/tchelepi
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 4
+CPU Utilized: 03:59:10
+CPU Efficiency: 67.18% of 05:56:00 core-walltime
+Job Wall-clock time: 01:29:00
+Memory Utilized: 3.32 GB
+Memory Efficiency: 41.52% of 8.00 GB
 ```
 
 
