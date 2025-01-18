@@ -288,13 +288,17 @@ python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake 
 python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Release -D GEOS_TPL_DIR="$tpls_path_release"
 
 # Step 6: Compile GEOS Debug
+
+# get number of cpu
+cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
+
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make
+make -j "$cpu_count"
 cd ..
 
 # Step 7: Compile GEOS Release
 cd build-sherlock-custom-release/ || { echo "Failed to enter build-sherlock-custom-release directory"; exit 1; }
-make
+make -j "$cpu_count"
 cd ../..
 ```
 
