@@ -235,7 +235,7 @@ The script above can be extended with a few additional steps to compile GEOS wit
 #SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
 #SBATCH --cpus-per-task=4                 # Request 4 CPU cores
 #SBATCH --mem=8G                          # Request 8 GB of memory
-#SBATCH --time=05:00:00                   # Set a time limit of 5.0 hours
+#SBATCH --time=06:00:00                   # Set a time limit of 6.0 hours
 #SBATCH --partition=normal                # Specify the partition
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
