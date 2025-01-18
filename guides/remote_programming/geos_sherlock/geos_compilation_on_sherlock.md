@@ -327,7 +327,7 @@ Memory Efficiency: 41.52% of 8.00 GB
 
 # Part 2: Compiling GEOS in Visual Studio Code
 
-This second part of the guide illustrates how to compile GEOS and run it as a simple application within Visual Studio Code (VSCode). While this method is specifically tailored for VSCode users, similar principles apply for compiling on local machines. Users may need to perform slightly different operations depending on their operating system.
+This second part of the guide illustrates how to compile GEOS and run it as a simple application within Visual Studio Code (VSCode). While this method is specifically tailored for VSCode users on Sherlock, similar principles apply to compiling on local machines. However, users may need to perform slightly different steps depending on their operating system.
 
 ### Using Sherlock OnDemand
 
