@@ -148,7 +148,7 @@ This procedure can be combined into a `compile_tpls.sbatch ` script to request r
 #SBATCH --partition=normal                # Specify the partition
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
-#SBATCH --mail-user=oduran@stanford.edu   # Replace with your email address
+#SBATCH --mail-user=suid@stanford.edu   # Replace with your email address
 
 # Step 0: Load the necessary modules
 module load system devel math
@@ -201,7 +201,7 @@ You will receive an email confirmation upon the completion or failure of the job
 ```bash
 Job ID: 58367115
 Cluster: sherlock
-User/Group: oduran/tchelepi
+User/Group: suid/tchelepi
 State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 4
@@ -241,7 +241,7 @@ This procedure can be combined into a `compile_geos.sbatch `. Below is an exampl
 #SBATCH --partition=normal                # Specify the partition
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
-#SBATCH --mail-user=oduran@stanford.edu   # Replace with your email address
+#SBATCH --mail-user=suid@stanford.edu   # Replace with your email address
 
 # Step 0: Load the necessary modules
 module load system devel math
@@ -324,7 +324,7 @@ Sherlock OnDemand ([link](https://ondemand.sherlock.stanford.edu/pun/sys/dashboa
      ```
    - **Workspace**:
      ```
-     /home/users/oduran
+     /home/users/suid
      ```
 
    - **Partition**: dev
@@ -339,7 +339,7 @@ The system will notify you by email when your session is ready if you select the
 ### Opening the GEOS Folder
 
 1. In VSCode, select **File** > **Open Folder**.
-2. Enter the path: `/home/groups/tchelepi/oduran/GEOS` and click **OK**.
+2. Enter the path: `/home/groups/tchelepi/suid/GEOS` and click **OK**.
 
 ### Configuring GEOS
 
@@ -359,7 +359,7 @@ The system will notify you by email when your session is ready if you select the
             "ENABLE_HYPRE": "ON",
             "ENABLE_TRILINOS": "OFF",
             "ENABLE_CUDA": "OFF",
-            "GEOS_TPL_DIR": "/home/groups/tchelepi/oduran/thirdPartyLibs/install-sherlock-custom-debug"
+            "GEOS_TPL_DIR": "/home/groups/tchelepi/suid/thirdPartyLibs/install-sherlock-custom-debug"
         },
         "generator": "Unix Makefiles",
         "useProjectStatusView": false
@@ -395,7 +395,7 @@ The system will notify you by email when your session is ready if you select the
 
 4. Press `Ctrl + Shift + P` and type **CMake: Open CMake Tools Extension**. Locate **CMake: Parallel Jobs** and set the number of jobs to **20**. Then, press `Ctrl + Shift + P` again and select **CMake: Configure**.
 
-5. Build files will be generated in: `/home/groups/tchelepi/oduran/geos-build/Debug`.
+5. Build files will be generated in: `/home/groups/tchelepi/suid/geos-build/Debug`.
 
 ### Building GEOS
 
