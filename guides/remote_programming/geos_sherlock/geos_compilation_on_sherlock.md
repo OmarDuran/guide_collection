@@ -224,9 +224,7 @@ tail -f job_tpls_output_58367115.log
 Follow the steps above to successfully compile TPLs on the Sherlock environment. 
 
 ## Command line GEOS compilation
-The steps above can be extender to fully compile GEOS the Sherlock environment. 
-
-This procedure can be combined into a `compile_geos.sbatch `. Below is an example of how the sbatch script should look:
+The script above can be extended with a few additional steps to compile GEOS within the Sherlock environment. This extended procedure can be combined into a `compile_geos.sbatch `. Below is an example of how the sbatch script should look:
 
 ```bash
 #!/bin/bash
