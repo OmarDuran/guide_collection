@@ -1,10 +1,10 @@
 # GEOS Compilation on Sherlock
 
 ## Overview
-This guide outlines the steps necessary to compile the GEOS simulator on the Stanford Sherlock cluster. It consists of two main parts: the compilation of Third-Party Libraries (TPLs) and the compilation of GEOS using Visual Studio Code (VSCode).
+This guide outlines the steps necessary to compile the GEOS simulator on the Stanford Sherlock cluster. It consists of two main parts: the compilation of Third-Party Libraries (TPLs) and GEOS with sbatch scripts and the compilation of GEOS using Visual Studio Code (VSCode).
 
 In the first part, we will demonstrate how compiling the TPLs can be simplified to a straightforward command line, such as `sbatch compile_tpls.sbatch`.
-This part proceeds step by step to construct the `compile_tpls.sbatch` script. Furthermore, the compilation of GEOS is demonstrated by extending similar concepts to obtain an analogous command line, such as `sbatch compile_geos.sbatch`.
+This part proceeds step by step to construct the `compile_tpls.sbatch` script. Furthermore, the compilation of GEOS is demonstrated by extending similar concepts to obtain an similar command line, such as `sbatch compile_geos.sbatch`.
 
 In the second part, we will explore how VSCode can be utilized in an interactive session to compile and debug GEOS effectively.
 
