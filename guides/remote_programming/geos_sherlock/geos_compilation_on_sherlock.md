@@ -292,12 +292,12 @@ python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake 
 # Step 6: Compile GEOS Debug
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
 make
-cd ../..
+cd ..
 
 # Step 7: Compile GEOS Release
 cd build-sherlock-custom-release/ || { echo "Failed to enter build-sherlock-custom-release directory"; exit 1; }
 make
-cd ..
+cd ../..
 ```
 
 The `compile_geos.sbatch` file automates the build process for GEOS. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
