@@ -300,6 +300,12 @@ make
 cd ..
 ```
 
+The `compile_geos.sbatch` file automates the build process for GEOS. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
+
+```bash
+sbatch compile_geos.sbatch
+```
+
 
 # Part 2: Compiling GEOS in Visual Studio Code
 
