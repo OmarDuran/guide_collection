@@ -228,13 +228,13 @@ The script above can be extended with a few additional steps to compile GEOS wit
 
 ```bash
 #!/bin/bash
-#SBATCH --job-name=compile_tpls         # Name of the job
-#SBATCH --output=job_tpls_output_%j.log  # Output log file (%j will be replaced by job ID)
-#SBATCH --error=job_tpls_error_%j.log    # Error log file (%j will be replaced by job ID)
+#SBATCH --job-name=compile_geos        # Name of the job
+#SBATCH --output=job_geos_output_%j.log  # Output log file (%j will be replaced by job ID)
+#SBATCH --error=job_geos_error_%j.log    # Error log file (%j will be replaced by job ID)
 #SBATCH --nodes=1                         # Use one node
 #SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
 #SBATCH --cpus-per-task=4                 # Request 4 CPU cores
-#SBATCH --mem=8G                          # Request 8 GB of memory
+#SBATCH --mem=16G                          # Request 16 GB of memory
 #SBATCH --time=05:00:00                   # Set a time limit of 5.0 hours
 #SBATCH --partition=normal                # Specify the partition
 # Email notifications
