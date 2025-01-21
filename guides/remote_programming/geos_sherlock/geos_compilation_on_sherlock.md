@@ -214,7 +214,7 @@ cd ../..
 The `compile_tpls.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
 
 ```bash
-sbatch compile_tpls.sbatch
+sbatch compile_geos.sbatch
 ```
 It will create a unique identifier for the process (for instance, 58367115) for further reference.
 
