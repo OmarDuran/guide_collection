@@ -3,7 +3,7 @@
 ## Overview
 This guide outlines the steps necessary to compile the GEOS simulator on the Stanford Sherlock cluster. It consists of the compilation of Third-Party Libraries (TPLs) and GEOS with sbatch scripts.
 
-this guide documents how compiling the TPLs can be simplified to a straightforward command line, such as `sbatch compile_geos.sbatch`. This guide proceeds step by step to construct the `compile_geos.sbatch ` script. Compilation for other build types are achieve by manually modifiying the script for `release` build type.
+this guide documents how compiling GEOS can be simplified to a straightforward command line, such as `sbatch compile_geos.sbatch`. This guide proceeds step by step to construct the `compile_geos.sbatch ` script. Compilation for other build types are achieve by manually modifiying the script for `release` build type.
 
 ### Remark
 Note that `GROUP_HOME` is a shared storage device; therefore, each `<SUID>` should create a folder named after its corresponding SUID to maintain user-specific storage and make it easy to identify the folder's owner.
@@ -242,7 +242,7 @@ tail -f job_tpls_output_58367115.log
 
 
 ## Summary GEOS compilation 
-At this point, you have successfully compiled and executed GEOS on the Stanford cluster, Sherlock, utilizing command line tools and various concepts from SLURM. This guide has covered the compilation and execution of GEOS on Sherlock. Note that different dependency versions and GPU execution are not within the scope of this guide. However, those processes would involve similar operations as described along the sections of this document.
+At this point, you have successfully compiled the GEOS on Sherlock cluster, by employing command line tools in conjunction with various concepts related to SLURM (Simple Linux Utility for Resource Management). Note that this guide does not cover the installation of different versions of dependencies or GPU-based compilation. However, those processes would involve similar operations as described along the sections of this document.
 
 
 ## Bibliography 
