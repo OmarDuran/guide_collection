@@ -208,7 +208,7 @@ cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom
 make -j "$cpu_count"
 cd ../..
 ```
-## Compiling TPls with the SBATCH Script
+## Compiling GEOS with a SBATCH Script
 
 
 The `compile_tpls.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
