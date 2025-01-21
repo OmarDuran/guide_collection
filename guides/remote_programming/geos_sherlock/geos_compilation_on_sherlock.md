@@ -111,8 +111,7 @@ Copy the custom configuration file and configure TPLs for both Debug and Release
 ```bash
 cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
 cd thirdPartyLibs/
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Release
+python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt debug
 cd ..
 ```
 
@@ -144,9 +143,9 @@ This procedure can be combined into a `compile_tpls.sbatch ` script to request r
 #SBATCH --nodes=1                         # Use one node
 #SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
 #SBATCH --cpus-per-task=4                 # Request 4 CPU cores
-#SBATCH --mem=8G                          # Request 8 GB of memory
-#SBATCH --time=03:00:00                   # Set a time limit of 3.0 hours
-#SBATCH --partition=normal                # Specify the partition
+#SBATCH --mem=16G                          # Request 16 GB of memory
+#SBATCH --time=02:00:00                   # Set a time limit of 3.0 hours
+#SBATCH --partition=dev                # Specify the partition
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
 #SBATCH --mail-user=suid@stanford.edu   # Replace with your email address
@@ -175,15 +174,9 @@ cd ..
 cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
 cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
 python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Release
 
 # Step 3: Compile TPLs Debug
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make
-cd ..
-
-# Step 4: Compile TPLs Release
-cd build-sherlock-custom-release/ || { echo "Failed to enter build-sherlock-custom-release directory"; exit 1; }
 make
 cd ../..
 ```
@@ -236,8 +229,8 @@ The script above can be extended with a few additional steps to compile GEOS wit
 #SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
 #SBATCH --cpus-per-task=4                 # Request 4 CPU cores
 #SBATCH --mem=16G                          # Request 16 GB of memory
-#SBATCH --time=05:00:00                   # Set a time limit of 5.0 hours
-#SBATCH --partition=normal                # Specify the partition
+#SBATCH --time=02:00:00                   # Set a time limit of 2.0 hours
+#SBATCH --partition=dev                # Specify the partition
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
 #SBATCH --mail-user=suid@stanford.edu   # Replace with your email address
@@ -266,39 +259,26 @@ cd ..
 cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
 cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
 python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Release
 
 # Step 3: Compile TPLs Debug
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
 make
-cd ..
-
-# Step 4: Compile TPLs Release
-cd build-sherlock-custom-release/ || { echo "Failed to enter build-sherlock-custom-release directory"; exit 1; }
-make
 cd ../..
 
-# Step 5: Configure GEOS
+# Step 4: Configure GEOS
 cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 
 # Get absolute path for TPls installations
-tpls_path_debug=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
-tpls_path_release=$(realpath ../thirdPartyLibs/install-sherlock-custom-release/)
+tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
 
-python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path_debug"
-python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Release -D GEOS_TPL_DIR="$tpls_path_release"
+python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path"
 
-# Step 6: Compile GEOS Debug
+# Step 5: Compile GEOS Debug
 
 # get number of cpu
 cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
 
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make -j "$cpu_count"
-cd ..
-
-# Step 7: Compile GEOS Release
-cd build-sherlock-custom-release/ || { echo "Failed to enter build-sherlock-custom-release directory"; exit 1; }
 make -j "$cpu_count"
 cd ../..
 ```
