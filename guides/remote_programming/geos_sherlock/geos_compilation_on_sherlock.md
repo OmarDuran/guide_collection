@@ -3,16 +3,13 @@
 ## Overview
 This guide outlines the steps necessary to compile the GEOS simulator on the Stanford Sherlock cluster. It consists of the compilation of Third-Party Libraries (TPLs) and GEOS with sbatch scripts.
 
-this guide documents how compiling the TPLs can be simplified to a straightforward command line, such as `sbatch compile_tpls.sbatch`.
-This part proceeds step by step to construct the `compile_tpls.sbatch` script. Furthermore, the compilation of GEOS is demonstrated by extending similar concepts to obtain an similar command line, such as `sbatch compile_geos.sbatch`.
+this guide documents how compiling the TPLs can be simplified to a straightforward command line, such as `sbatch compile_geos.sbatch`. This guide proceeds step by step to construct the `compile_geos.sbatch ` script. Compilation for other build types are achieve by manually modifiying the script for `release` build type.
 
 ### Remark
 Note that `GROUP_HOME` is a shared storage device; therefore, each `<SUID>` should create a folder named after its corresponding SUID to maintain user-specific storage and make it easy to identify the folder's owner.
 
-### Remark
-Compilation for other build types are achieve by modifiying the scripts with `release` build type for example.
 
-# Compilation of Third-Party Libraries (TPLs)
+# Compilation of GEOS
 
 ### Step 0: Loading the Necessary Modules
 
@@ -123,102 +120,31 @@ make
 cd ..
 ```
 
-### Step 4: Compile TPLs in Release mode
+### Step 4: Configure GEOS
 
-```bash
-cd build-sherlock-custom-release/
-make
-cd ..
+```
+cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
+
+# Get absolute path for TPls installations
+tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
+
+python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path"
+
+```
+
+### Step 5: Compile GEOS
+```
+# get number of cpu
+cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
+
+cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
+make -j "$cpu_count"
+cd ../..
 ```
 
 ## Creating an SBATCH Script
 
-This procedure can be combined into a `compile_tpls.sbatch ` script to request resources and execute the steps above sequentially. Below is an example of how the sbatch script should look:
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=compile_tpls         # Name of the job
-#SBATCH --output=job_tpls_output_%j.log  # Output log file (%j will be replaced by job ID)
-#SBATCH --error=job_tpls_error_%j.log    # Error log file (%j will be replaced by job ID)
-#SBATCH --nodes=1                         # Use one node
-#SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
-#SBATCH --cpus-per-task=4                 # Request 4 CPU cores
-#SBATCH --mem=16G                          # Request 16 GB of memory
-#SBATCH --time=02:00:00                   # Set a time limit of 3.0 hours
-#SBATCH --partition=dev                # Specify the partition
-# Email notifications
-#SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
-#SBATCH --mail-user=suid@stanford.edu   # Replace with your email address
-
-# Step 0: Load the necessary modules
-module load system devel math
-module load git/2.45.1 git-lfs/2.4.0 gcc/12.4.0 cmake/3.24.2 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
-
-# Step 1: Clone the sources
-GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/thirdPartyLibs.git
-cd thirdPartyLibs || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-git lfs install
-git pull
-git submodule init
-git submodule update
-cd ..
-
-GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/GEOS.git
-cd GEOS || { echo "Failed to enter GEOS directory"; exit 1; }
-git lfs install
-git submodule init
-git submodule update
-cd ..
-
-# Step 2: Configure TPLs
-cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
-cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug
-
-# Step 3: Compile TPLs Debug
-cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make
-cd ../..
-```
-## Compiling TPls with the SBATCH Script
-
-
-The `compile_tpls.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
-
-```bash
-sbatch compile_tpls.sbatch
-```
-It will create a unique identifier for the process (for instance, 58367115) for further reference.
-
-You will receive an email confirmation upon the completion or failure of the job. Below is an example of a typical email notification:
-
-```bash
-Job ID: 58367115
-Cluster: sherlock
-User/Group: suid/tchelepi
-State: COMPLETED (exit code 0)
-Nodes: 1
-Cores per node: 4
-CPU Utilized: 03:59:10
-CPU Efficiency: 67.18% of 05:56:00 core-walltime
-Job Wall-clock time: 01:29:00
-Memory Utilized: 3.32 GB
-Memory Efficiency: 41.52% of 8.00 GB
-```
-
-To monitor the output of the process, if it is still active, you may connect to Sherlock at any time and execute the following command:
-
-```bash
-tail -f job_tpls_output_58367115.log
-```
-
-
-
-## Summary TPLs compilation 
-Follow the steps above to successfully compile TPLs on the Sherlock environment. 
-
-## Command line GEOS compilation
-The script above can be extended with a few additional steps to compile GEOS within the Sherlock environment. This extended procedure can be combined into a `compile_geos.sbatch `. Below is an example of how the sbatch script should look:
+This procedure can be combined into a `compile_geos.sbatch ` script to request resources and execute the steps above sequentially. Below is an example of how the sbatch script should look:
 
 ```bash
 #!/bin/bash
@@ -282,14 +208,17 @@ cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom
 make -j "$cpu_count"
 cd ../..
 ```
+## Compiling TPls with the SBATCH Script
 
-The `compile_geos.sbatch` file automates the build process for GEOS. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
+
+The `compile_tpls.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
 
 ```bash
-sbatch compile_geos.sbatch
+sbatch compile_tpls.sbatch
 ```
+It will create a unique identifier for the process (for instance, 58367115) for further reference.
 
-You will receive an email notification indicating the completion or failure of the job. Below there is an example of a typical email notification:
+You will receive an email confirmation upon the completion or failure of the job. Below is an example of a typical email notification:
 
 ```bash
 Job ID: 58367115
@@ -305,9 +234,15 @@ Memory Utilized: 3.32 GB
 Memory Efficiency: 41.52% of 8.00 GB
 ```
 
+To monitor the output of the process, if it is still active, you may connect to Sherlock at any time and execute the following command:
+
+```bash
+tail -f job_tpls_output_58367115.log
+```
+
 
 ## Summary GEOS compilation 
-At this point, you have successfully compiled and executed GEOS on the Stanford cluster, Sherlock, utilizing command line tools, various concepts from SLURM, and the VSCode IDE. This guide has covered the compilation and execution of GEOS on Sherlock. Note that different dependency versions and GPU execution are not within the scope of this guide. However, those processes would involve similar operations as described along the sections of this document.
+At this point, you have successfully compiled and executed GEOS on the Stanford cluster, Sherlock, utilizing command line tools and various concepts from SLURM. This guide has covered the compilation and execution of GEOS on Sherlock. Note that different dependency versions and GPU execution are not within the scope of this guide. However, those processes would involve similar operations as described along the sections of this document.
 
 
 ## Bibliography 
