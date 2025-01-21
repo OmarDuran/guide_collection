@@ -3,7 +3,7 @@
 ## Overview
 This guide outlines the steps necessary to compile the GEOS simulator on the Stanford Sherlock cluster. It consists of the compilation of Third-Party Libraries (TPLs) and GEOS with sbatch scripts.
 
-this guide documents how compiling GEOS can be simplified to a straightforward command line, such as `sbatch compile_geos.sbatch`. This guide proceeds step by step to construct the `compile_geos.sbatch ` script. Compilation for other build types are achieve by manually modifiying the script for `release` build type.
+This guide documents how compiling GEOS can be simplified to a straightforward command line, such as `sbatch compile_geos.sbatch`. This guide proceeds step by step to construct the `compile_geos.sbatch ` script. Compilation for other build types are achieve by manually modifiying the script for `release` build type.
 
 ### Remark
 Note that `GROUP_HOME` is a shared storage device; therefore, each `<SUID>` should create a folder named after its corresponding SUID to maintain user-specific storage and make it easy to identify the folder's owner.
@@ -211,7 +211,7 @@ cd ../..
 ## Compiling GEOS with a SBATCH Script
 
 
-The `compile_tpls.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
+The `compile_geos.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
 
 ```bash
 sbatch compile_geos.sbatch
