@@ -183,20 +183,17 @@ git submodule update
 cd ..
 
 # Step 2: Configure TPLs
-cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
-cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug
-
-# Step 3: Compile TPLs Debug
-cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
 
 # get number of cpu
 cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
 
-# you may choose to use a forking approach. Alternatively, you can utilize the make command.
-output_config=$(python3 scripts/config-build.py -hc ../GEOS/host-configs/apple/macOS_arm.cmake -bt Debug)
-tpl_list=$(echo $output_config | awk -F' = ' '/-- Building =/ {print $2}' | tr ';' ' ')
-for TPL in $(echo $tpl_list); do (make -j "$cpu_count" "$TPL" || echo "Failed to build $TPL"); done
+cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
+cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
+python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -DNUM_PROC="$cpu_count"
+
+# Step 3: Compile TPLs Debug
+cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
+make
 cd ../..
 
 # Step 4: Configure GEOS
@@ -210,7 +207,7 @@ python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake 
 # Step 5: Compile GEOS Debug
 
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make -j "$cpu_count"
+#make -j "$cpu_count"
 cd ../..
 ```
 ## Compiling GEOS with a SBATCH Script
