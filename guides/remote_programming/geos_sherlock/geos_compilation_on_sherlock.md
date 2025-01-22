@@ -185,7 +185,7 @@ cd ..
 # Step 2: Configure TPLs
 cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
 cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja
+python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug
 
 # Step 3: Compile TPLs Debug
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
