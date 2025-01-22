@@ -201,7 +201,6 @@ cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 
 # Get absolute path for TPls installations
 tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
-
 python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja -D GEOS_TPL_DIR="$tpls_path"
 
 # Step 5: Compile GEOS Debug
