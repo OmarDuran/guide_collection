@@ -109,7 +109,7 @@ Copy the custom configuration file and configure TPLs for both Debug and Release
 ```bash
 cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
 cd thirdPartyLibs/
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja
+python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug
 cd ..
 ```
 
