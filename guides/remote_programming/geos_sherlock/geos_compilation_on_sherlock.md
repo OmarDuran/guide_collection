@@ -52,6 +52,7 @@ The following is an example CMake configuration file named `sherlock-custom.cmak
 set(CONFIG_NAME "sherlock-custom" CACHE PATH "")
 set(GCC_ROOT "/share/software/user/open/gcc/12.4.0" CACHE PATH "")
 set(MPI_ROOT "/share/software/user/open/openmpi/5.0.5" CACHE PATH "")
+set(OPENBLAS_ROOT  "/share/software/user/open/openblas/0.3.28" CACHE PATH "")
 set(BLAS_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/libblas.so" CACHE STRING "")
 set(LAPACK_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/liblapack.so" CACHE STRING "")
 
