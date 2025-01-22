@@ -189,7 +189,14 @@ python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custo
 
 # Step 3: Compile TPLs Debug
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make
+
+# get number of cpu
+cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
+
+# you may choose to use a forking approach. Alternatively, you can utilize the make command.
+output_config=$(python3 scripts/config-build.py -hc ../GEOS/host-configs/apple/macOS_arm.cmake -bt Debug)
+tpl_list=$(echo $output_config | awk -F' = ' '/-- Building =/ {print $2}' | tr ';' ' ')
+for TPL in $(echo $tpl_list); do (make -j "$cpu_count" "$TPL" || echo "Failed to build $TPL"); done
 cd ../..
 
 # Step 4: Configure GEOS
@@ -201,9 +208,6 @@ tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
 python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja -D GEOS_TPL_DIR="$tpls_path"
 
 # Step 5: Compile GEOS Debug
-
-# get number of cpu
-cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
 
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
 make -j "$cpu_count"
