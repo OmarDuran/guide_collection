@@ -17,7 +17,7 @@ Before starting the compilation, load the necessary modules:
 
 ```bash
 module load system devel math
-module load git/2.45.1 git-lfs/2.4.0 gcc/12.4.0 cmake/3.24.2 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
+module load git/2.45.1 git-lfs/2.4.0 cmake/3.24.2 ninja/1.9.0 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
 ```
 
 For more information on modules, see [Sherlock Modules Documentation](https://www.sherlock.stanford.edu/docs/software/modules/).
@@ -108,7 +108,7 @@ Copy the custom configuration file and configure TPLs for both Debug and Release
 ```bash
 cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
 cd thirdPartyLibs/
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt debug
+python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja
 cd ..
 ```
 
@@ -128,7 +128,7 @@ cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 # Get absolute path for TPls installations
 tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
 
-python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path"
+python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja -D GEOS_TPL_DIR="$tpls_path"
 
 ```
 
@@ -163,7 +163,7 @@ This procedure can be combined into a `compile_geos.sbatch ` script to request r
 
 # Step 0: Load the necessary modules
 module load system devel math
-module load git/2.45.1 git-lfs/2.4.0 gcc/12.4.0 cmake/3.24.2 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
+module load git/2.45.1 git-lfs/2.4.0 cmake/3.24.2 ninja/1.9.0 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
 
 # Step 1: Clone the sources
 GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/thirdPartyLibs.git
@@ -184,7 +184,7 @@ cd ..
 # Step 2: Configure TPLs
 cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
 cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug
+python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja
 
 # Step 3: Compile TPLs Debug
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
@@ -197,7 +197,7 @@ cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 # Get absolute path for TPls installations
 tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
 
-python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path"
+python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja -D GEOS_TPL_DIR="$tpls_path"
 
 # Step 5: Compile GEOS Debug
 
