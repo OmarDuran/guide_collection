@@ -156,7 +156,7 @@ This procedure can be combined into a `compile_geos.sbatch ` script to request r
 #SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
 #SBATCH --cpus-per-task=4                 # Request 4 CPU cores
 #SBATCH --mem=16G                          # Request 16 GB of memory
-#SBATCH --time=02:00:00                   # Set a time limit of 2.0 hours
+#SBATCH --time=03:00:00                   # Set a time limit of 3.0 hours
 #SBATCH --partition=dev                # Specify the partition
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
