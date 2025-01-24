@@ -162,7 +162,7 @@ This procedure can be combined into a `compile_geos.sbatch ` script to request r
 
 # Step 0: Load the necessary modules
 module load system devel math
-module load git/2.45.1 git-lfs/2.4.0 cmake/3.24.2 ninja/1.9.0 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
+module load git/2.45.1 git-lfs/2.4.0 cmake/3.24.2 ninja/1.9.0 llvm/17.0.6 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
 
 # Step 1: Clone the sources
 GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/thirdPartyLibs.git
