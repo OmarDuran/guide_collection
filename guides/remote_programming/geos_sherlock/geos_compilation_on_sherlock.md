@@ -243,6 +243,11 @@ This will initiate the compilation while managing job dependencies. You will rec
 To monitor the output while the compilation is in progress, use the following command:
 
 ```bash
+tail -f tpls_output.log
+```
+or 
+
+```bash
 tail -f geos_output.log
 ```
 
