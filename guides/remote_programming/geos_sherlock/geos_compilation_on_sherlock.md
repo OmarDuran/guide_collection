@@ -179,7 +179,7 @@ cd ..
 
 ```
 #!/bin/bash
-#SBATCH --job-name=tpls_build        # Name of the job
+#SBATCH --job-name=tpls_job        # Name of the job
 #SBATCH --output=tpls_output.log  # Output log file 
 #SBATCH --error=tpls_error.log    # Error log file 
 #SBATCH --nodes=1                         # Use one node
@@ -191,7 +191,7 @@ cd ..
 
 # Email notifications
 #SBATCH --mail-type=END,FAIL               # Email notifications for job completion and failure
-#SBATCH --mail-user=suid@stanford.edu    # Replace with your email address
+#SBATCH --mail-user=oduran@stanford.edu    # Replace with your email address
 
 # Load necessary modules
 module load system devel math
