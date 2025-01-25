@@ -198,8 +198,8 @@ module load system devel math
 module load cmake/3.24.2 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
 
 # Step 2: Configure TPLs
-cp sherlock-custom.cmake ../GEOS/host-configs/Stanford/.
-cd ../thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
+cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
+cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
 python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -DNUM_PROC=4
 
 # Step 3: Compile TPLs Debug
