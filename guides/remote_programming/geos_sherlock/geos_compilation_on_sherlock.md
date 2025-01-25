@@ -272,13 +272,13 @@ sbatch compile_geos.sbatch
 
 ```
 # Submit the first job and capture its job ID
-clone_id=$(sbatch job_clone.sh | awk '{print $4}')
+clone_id=$(sbatch clone.sh | awk '{print $4}')
 
 # Submit the second job with a dependency on the first job
-tpls_id=$(sbatch --dependency=afterok:$clone_id job_tpls.sh | awk '{print $4}')
+tpls_id=$(sbatch --dependency=afterok:$clone_id tpls.sh | awk '{print $4}')
 
 # Submit the third job with a dependency on the second job
-sbatch --dependency=afterok:$job2_id job_geos.sh
+sbatch --dependency=afterok:$job2_id geos.sh
 ```
 
 It will create a unique identifier for the process (for instance, 58367115) for further reference.
