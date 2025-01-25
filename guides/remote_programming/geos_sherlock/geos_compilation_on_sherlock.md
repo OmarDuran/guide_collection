@@ -50,7 +50,7 @@ The following is an example CMake configuration file named `sherlock-custom.cmak
 ```cmake
 # Custom Configuration
 set(CONFIG_NAME "sherlock-custom" CACHE PATH "")
-set(GCC_ROOT "/share/software/user/open/gcc/12.4.0" CACHE PATH "")
+set(LLVM_ROOT "/share/software/user/open/llvm/17.0.6" CACHE PATH "")
 set(MPI_ROOT "/share/software/user/open/openmpi/5.0.5" CACHE PATH "")
 set(OPENBLAS_ROOT  "/share/software/user/open/openblas/0.3.28" CACHE PATH "")
 set(BLAS_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/libblas.so" CACHE STRING "")
@@ -60,9 +60,8 @@ set(LAPACK_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/liblapack.so
 site_name(HOST_NAME)
 
 # Compiler Settings
-set(CMAKE_C_COMPILER       "${GCC_ROOT}/bin/gcc"      CACHE PATH "")
-set(CMAKE_CXX_COMPILER     "${GCC_ROOT}/bin/g++"      CACHE PATH "")
-set(CMAKE_Fortran_COMPILER "${GCC_ROOT}/bin/gfortran" CACHE PATH "")
+set(CMAKE_C_COMPILER       "${LLVM_ROOT}/bin/clang"      CACHE PATH "")
+set(CMAKE_CXX_COMPILER     "${LLVM_ROOT}/bin/clang++"      CACHE PATH "")
 
 # OpenMP Options
 set(ENABLE_OPENMP ON CACHE BOOL "")
@@ -101,7 +100,6 @@ endif()
 
 # Include TPL Configuration
 include(${CMAKE_CURRENT_LIST_DIR}/../tpls.cmake)
-
 ```
 
 Copy the custom configuration file and configure TPLs for both Debug and Release builds:
@@ -156,15 +154,16 @@ This procedure can be combined into a `compile_geos.sbatch ` script to request r
 #SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
 #SBATCH --cpus-per-task=4                 # Request 4 CPU cores
 #SBATCH --mem=16G                          # Request 16 GB of memory
-#SBATCH --time=03:00:00                   # Set a time limit of 3.0 hours
-#SBATCH --partition=dev                # Specify the partition
+#SBATCH --time=03:30:00                   # Set a time limit of 3.5 hours
+#SBATCH --partition=normal                # Specify the partition
+
 # Email notifications
 #SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
-#SBATCH --mail-user=suid@stanford.edu   # Replace with your email address
+#SBATCH --mail-user=oduran@stanford.edu   # Replace with your email address
 
 # Step 0: Load the necessary modules
 module load system devel math
-module load git/2.45.1 git-lfs/2.4.0 cmake/3.24.2 ninja/1.9.0 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
+module load git/2.45.1 git-lfs/2.4.0 cmake/3.24.2 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
 
 # Step 1: Clone the sources
 GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/thirdPartyLibs.git
@@ -184,12 +183,9 @@ cd ..
 
 # Step 2: Configure TPLs
 
-# get number of cpu
-cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
-
 cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
 cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -DNUM_PROC="$cpu_count"
+python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -DNUM_PROC=4
 
 # Step 3: Compile TPLs Debug
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
@@ -201,12 +197,12 @@ cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 
 # Get absolute path for TPls installations
 tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
-python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja -D GEOS_TPL_DIR="$tpls_path"
+python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path"
 
 # Step 5: Compile GEOS Debug
 
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-ninja -j "$cpu_count"
+make -j "$cpu_count"
 cd ../..
 ```
 ## Compiling GEOS with a SBATCH Script
