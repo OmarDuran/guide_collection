@@ -264,11 +264,7 @@ cd ../..
 ## Compiling GEOS with a SBATCH Script
 
 
-The `compile_geos.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
-
-```bash
-sbatch compile_geos.sbatch
-```
+The `compile_geos.sh` file automates the build process and use the concept of dependency in SLURM to excecute each job only after it is completed. 
 
 ```
 # Submit the first job and capture its job ID
@@ -278,12 +274,18 @@ clone_id=$(sbatch clone.sh | awk '{print $4}')
 tpls_id=$(sbatch --dependency=afterok:$clone_id tpls.sh | awk '{print $4}')
 
 # Submit the third job with a dependency on the second job
-sbatch --dependency=afterok:$job2_id geos.sh
+sbatch --dependency=afterok:$tpls_id geos.sh
 ```
 
-It will create a unique identifier for the process (for instance, 58367115) for further reference.
+Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake` and create the files `clone.sh`, `tpls.sh` and `geos.sh` with the suggested content. To execute the script, run:
 
-You will receive an email confirmation upon the completion or failure of the job. Below is an example of a typical email notification:
+```bash
+source compile_geos.sh
+```
+
+It will create a unique identifiers for the processes (for instance, 58367115) for further reference.
+
+You will receive an email confirmation upon the completion or failure for each job. Below is an example of a typical email notification:
 
 ```bash
 Job ID: 58367115
@@ -302,7 +304,7 @@ Memory Efficiency: 41.52% of 8.00 GB
 To monitor the output of the process, if it is still active, you may connect to Sherlock at any time and execute the following command:
 
 ```bash
-tail -f job_tpls_output_58367115.log
+tail -f geos_output.log
 ```
 
 
