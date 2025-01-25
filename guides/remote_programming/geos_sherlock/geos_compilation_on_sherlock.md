@@ -4,7 +4,7 @@
 This guide provides a step-by-step process for compiling the GEOS simulator on the Stanford Sherlock cluster. The compilation involves both the Third-Party Libraries (TPLs) and the GEOS simulator itself. These steps can be executed using a script for submitting two jobs, one for the compilation of tpls and a second for compilation of GEOS.
 
 ### Important Note
-Ensure that the `cmake` file and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are placed in the same folder named `build_utils`. This organization is crucial for the successful execution of the compilation process.
+Ensure that the `cmake` (for example if want to use `sherlock-custom.cmake`) file and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are placed in the same folder named `build_utils`. This organization is crucial for the successful execution of the compilation process.
 
 ## Compilation Steps
 
@@ -89,7 +89,7 @@ make
 cd ../..
 ```
 
-The following is an example CMake configuration file `sherlock-custom.cmake`. This file maps some of the loaded modules to configure TPLs (Third-Party Libraries) and GEOS.
+The following is an example CMake configuration file `sherlock-custom.cmake`. This file maps some of the loaded modules to configure TPLs (Third-Party Libraries) and GEOS. for completeness, the file `sherlock-custom.cmake` is provided as an example. However notice that you can use other configuration files located in [GEOS/host-configs](https://github.com/GEOS-DEV/GEOS/tree/develop/host-configs).
 
 ```cmake
 # Custom Configuration
