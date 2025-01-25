@@ -50,9 +50,8 @@ The following is an example CMake configuration file named `sherlock-custom.cmak
 ```cmake
 # Custom Configuration
 set(CONFIG_NAME "sherlock-custom" CACHE PATH "")
-set(LLVM_ROOT "/share/software/user/open/llvm/17.0.6" CACHE PATH "")
+set(GCC_ROOT "/share/software/user/open/gcc/12.4.0" CACHE PATH "")
 set(MPI_ROOT "/share/software/user/open/openmpi/5.0.5" CACHE PATH "")
-set(OPENBLAS_ROOT  "/share/software/user/open/openblas/0.3.28" CACHE PATH "")
 set(BLAS_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/libblas.so" CACHE STRING "")
 set(LAPACK_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/liblapack.so" CACHE STRING "")
 
@@ -60,11 +59,9 @@ set(LAPACK_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/liblapack.so
 site_name(HOST_NAME)
 
 # Compiler Settings
-set(CMAKE_C_COMPILER       "${LLVM_ROOT}/bin/clang"      CACHE PATH "")
-set(CMAKE_CXX_COMPILER     "${LLVM_ROOT}/bin/clang++"      CACHE PATH "")
-
-# OpenMP Options
-set(ENABLE_OPENMP ON CACHE BOOL "")
+set(CMAKE_C_COMPILER       "${GCC_ROOT}/bin/gcc"      CACHE PATH "")
+set(CMAKE_CXX_COMPILER     "${GCC_ROOT}/bin/g++"      CACHE PATH "")
+set(CMAKE_Fortran_COMPILER "${GCC_ROOT}/bin/gfortran" CACHE PATH "")
 
 # MPI Options
 set(ENABLE_MPI ON CACHE PATH "" FORCE)
