@@ -152,6 +152,8 @@ Below is an example of how the scripts should look:
 
 ### Cloning Script
 
+name of the file `clone.sh`
+
 ```
 #!/bin/bash
 # Load necessary modules
@@ -177,6 +179,8 @@ cd ..
 
 ### Building TPLs
 
+name of the file `tpls.sh`
+
 ```
 #!/bin/bash
 #SBATCH --job-name=tpls_job        # Name of the job
@@ -191,7 +195,7 @@ cd ..
 
 # Email notifications
 #SBATCH --mail-type=END,FAIL               # Email notifications for job completion and failure
-#SBATCH --mail-user=oduran@stanford.edu    # Replace with your email address
+#SBATCH --mail-user=suid@stanford.edu    # Replace with your email address
 
 # Load necessary modules
 module load system devel math
@@ -210,6 +214,8 @@ cd ../..
 
 ### Building GEOS
 
+name of the file `geos.sh`
+
 ```
 #!/bin/bash
 #SBATCH --job-name=geos_job         # Name of the job
@@ -224,7 +230,7 @@ cd ../..
 
 # Email notifications
 #SBATCH --mail-type=END,FAIL               # Email notifications for job completion and failure
-#SBATCH --mail-user=oduran@stanford.edu    # Replace with your email address
+#SBATCH --mail-user=suid@stanford.edu    # Replace with your email address
 
 # Load necessary modules
 module load system devel math
