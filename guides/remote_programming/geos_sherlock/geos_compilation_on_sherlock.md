@@ -268,13 +268,13 @@ The `compile_geos.sh` file automates the build process and use the concept of de
 
 ```
 # Submit the first job and capture its job ID
-clone_id=$(sbatch clone.sh | awk '{print $4}')
+clone_id=$(sbatch build_utils/clone.sh | awk '{print $4}')
 
 # Submit the second job with a dependency on the first job
-tpls_id=$(sbatch --dependency=afterok:$clone_id tpls.sh | awk '{print $4}')
+tpls_id=$(sbatch --dependency=afterok:$clone_id build_utils/tpls.sh | awk '{print $4}')
 
 # Submit the third job with a dependency on the second job
-sbatch --dependency=afterok:$tpls_id geos.sh
+sbatch --dependency=afterok:$tpls_id build_utils/geos.sh
 ```
 
 Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake` and create the files `clone.sh`, `tpls.sh` and `geos.sh` with the suggested content. To execute the script, run:
