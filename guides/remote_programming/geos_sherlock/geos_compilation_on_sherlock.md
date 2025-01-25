@@ -4,7 +4,22 @@
 This guide provides a step-by-step process for compiling the GEOS simulator on the Stanford Sherlock cluster. The compilation involves both the Third-Party Libraries (TPLs) and the GEOS simulator itself. These steps can be executed using a script that submits two jobs: one for the compilation of TPLs and a second for the compilation of GEOS.
 
 ### Important Note
-Ensure that the `cmake` file (for example, `sherlock-custom.cmake`, as provided below) and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are placed in the same folder named `build_utils`. This organization is crucial for the successful execution of the compilation process.
+
+Ensure that the CMake file (for example, `sherlock-custom.cmake`, as shown below) and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are located in the same folder named `build_utils`. This organization is essential for the successful execution of the compilation process.
+
+The following illustrates the proposed file structure. If you run `ls` and `ls -l build_utils/` commands in your working directory, you should see something like this:
+
+```
+[suid@sh04-ln04 login /home/groups/tchelepi/suid]$ ls
+build_utils  compile_geos.sh
+
+[suid@sh04-ln04 login /home/groups/tchelepi/suid]$ ls -l build_utils/
+total 96
+-rw-r--r-- 1 suid tchelepi  565 Jan 24 18:07 clone.sh
+-rw-r--r-- 1 suid tchelepi 1424 Jan 24 18:46 geos.sh
+-rw-r--r-- 1 suid tchelepi 2103 Jan 24 18:38 sherlock-custom.cmake
+-rw-r--r-- 1 suid tchelepi 1380 Jan 24 18:46 tpls.sh
+```
 
 ## Compilation Steps
 
