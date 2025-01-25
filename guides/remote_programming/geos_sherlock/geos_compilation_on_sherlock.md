@@ -212,7 +212,7 @@ cd ../..
 
 ```
 #!/bin/bash
-#SBATCH --job-name= geos_build         # Name of the job
+#SBATCH --job-name=geos_job         # Name of the job
 #SBATCH --output=geos_output.log  # Output log file 
 #SBATCH --error=geos_error.log    # Error log file 
 #SBATCH --nodes=1                         # Use one node
@@ -224,13 +224,14 @@ cd ../..
 
 # Email notifications
 #SBATCH --mail-type=END,FAIL               # Email notifications for job completion and failure
-#SBATCH --mail-user=suid@stanford.edu    # Replace with your email address
+#SBATCH --mail-user=oduran@stanford.edu    # Replace with your email address
 
 # Load necessary modules
 module load system devel math
 module load cmake/3.24.2 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
 
 # Step 4: Configure GEOS
+
 cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 
 # Get absolute path for TPls installation
