@@ -154,19 +154,6 @@ Below is an example of how the scripts should look:
 
 ```
 #!/bin/bash
-#SBATCH --job-name=clone        # Name of the job
-#SBATCH --output=clone_output.log  # Output log file 
-#SBATCH --error=clone_error.log    # Error log file 
-#SBATCH --nodes=1                         # Use one node
-#SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
-#SBATCH --cpus-per-task=1                 # Request 1 CPU cores
-#SBATCH --mem=8G                          # Request 8 GB of memory
-#SBATCH --time=00:15:00                   # Set a time limit of 0.25 hours
-#SBATCH --partition=dev                # Specify the partition
-
-# Email notifications
-#SBATCH --mail-type=END,FAIL               # Email notifications for job completion and failure
-#SBATCH --mail-user=suid@stanford.edu    # Replace with your email address
 
 # Load necessary modules
 module load system 
