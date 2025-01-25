@@ -242,17 +242,20 @@ This will initiate the compilation while managing job dependencies. You will rec
 ### Monitoring Progress
 To monitor the output while the compilation is in progress, use the following command:
 
+For step 2:
+
 ```bash
 tail -f tpls_output.log
 ```
-or 
+
+For step 3:
 
 ```bash
 tail -f geos_output.log
 ```
 
 ## Conclusion
-You have successfully compiled the GEOS simulator on the Sherlock cluster using this guide. The process effectively employs SLURM's resource management capabilities to streamline job execution in sequence. For advanced usage, additional configurations and modifications may be required based on specific project needs.
+You have successfully compiled GEOS simulator on Sherlock cluster. The process effectively employs SLURM's resource management functionalities to streamline jobs execution in sequence. For advanced usage, additional configurations and modifications may be required based on specific needs.
 
 ## References
 - [GEOSX Documentation](https://geosx-geosx.readthedocs-hosted.com/en/latest/#)
