@@ -4,7 +4,7 @@
 This guide provides a step-by-step process for compiling the GEOS simulator on the Stanford Sherlock cluster. The compilation involves both the Third-Party Libraries (TPLs) and the GEOS simulator itself. These steps can be executed using a script for submitting two jobs, one for the compilation of tpls and a second for compilation of GEOS.
 
 ### Important Note
-Ensure that the `cmake` (for example if want to use `sherlock-custom.cmake`) file and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are placed in the same folder named `build_utils`. This organization is crucial for the successful execution of the compilation process.
+Ensure that the `cmake` (for example if want to use `sherlock-custom.cmake` as example provided below) file and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are placed in the same folder named `build_utils`. This organization is crucial for the successful execution of the compilation process.
 
 ## Compilation Steps
 
@@ -16,6 +16,9 @@ source compile_geos.sh
 ```
 
 This script orchestrates the compilation process by calling other scripts in a defined order.
+1. Clone the Sources
+2. Compile TPLs
+3. Compile GEOS
 
 ### Step 1: Clone the Sources
 The **`clone.sh`** script is responsible for fetching the required repositories and initializing the necessary submodules. The script performs the following actions:
@@ -49,12 +52,11 @@ git submodule update
 cd ..
 ```
 
-### Step 2: Configure TPLs
+### Step 2: Compile TPLs
 The **`tpls.sh`** script configures and compiles the Third-Party Libraries. This involves copying a custom configuration file and executing the build commands:
 
 - It loads the necessary modules.
-- It copies the CMake configuration file (`sherlock-custom.cmake`) into the appropriate directory for GEOS.
-- It executes the `config-build.py` script to configure TPLs for Debug builds before running `make` to compile them.
+- It copies the CMake configuration file (`sherlock-custom.cmake`) into the appropriate directory for GEOS. - It executes the `config-build.py` script to configure TPLs for Debug builds before running `make` to compile them.
 
 **Content of `tpls.sh`:**
 
@@ -155,10 +157,10 @@ cd ..
 ### Step 3: Configure GEOS
 The **`geos.sh`** script takes care of configuring and compiling the GEOS simulator itself. It performs these tasks:
 
-- It loads the necessary modules.
+- It loads the necessary modules (the same as for the TPLs).
 - It retrieves the absolute path for the TPLs installation.
 - It executes the `config-build.py` script for GEOS, linking it to the previously built TPLs.
-- Finally, it compiles GEOS using `make`.
+- Finally, it compiles GEOS using `make -j`.
 
 **Content of `geos.sh`:**
 
@@ -197,7 +199,7 @@ cd ../..
 
 ## Compiling GEOS
 
-The `compile_geos.sh` file combines the above steps into a unified process. It handles the sequence and dependencies between the jobs:
+The `compile_geos.sh` file combines the above steps into a unified process. It handles the sequence and dependencies between the jobs via the flag `--dependency`:
 
 ```bash
 # Clone sources
@@ -209,6 +211,8 @@ tpls_id=$(sbatch build_utils/tpls.sh | awk '{print $4}')
 # Submit the GEOS compilation job with a dependency on the TPLs job
 sbatch --dependency=afterok:$tpls_id build_utils/geos.sh
 ```
+
+GEOS compilation will be submitted only if the TPL's job succeed, in this manner we can allocated resources form a partition of the type dev. See [Sherlock documentatoin](https://www.sherlock.stanford.edu/docs/user-guide/running-jobs/?h=sh_part#available-resources) for available resourves and type of partitions.
 
 ### Execution
 To begin the entire process, simply run:
