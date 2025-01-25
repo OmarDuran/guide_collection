@@ -1,34 +1,58 @@
 # GEOS Compilation on Sherlock
 
 ## Overview
-This guide outlines the necessary steps to compile the GEOS simulator on the Stanford Sherlock cluster. It covers the compilation of Third-Party Libraries (TPLs) as well as the GEOS simulator itself, utilizing sbatch scripts.
+This guide provides a step-by-step process for compiling the GEOS simulator on the Stanford Sherlock cluster. The compilation involves both the Third-Party Libraries (TPLs) and the GEOS simulator itself. These steps can be executed using a script that submits two jobs: one for the compilation of TPLs and a second for the compilation of GEOS.
 
-The compilation process for GEOS can be efficiently simplified into a single command line instruction, such as `sbatch compile_geos.sbatch`. This guide will walk you through the step-by-step construction of the `compile_geos.sbatch` script. For other build types, you can achieve compilation by manually modifying this script to accommodate the desired release build type.
+### Important Note
 
-### Remark
-Note that `GROUP_HOME` is a shared storage device; therefore, each `<SUID>` should create a folder named after its corresponding SUID to maintain user-specific storage and make it easy to identify the folder's owner.
+Ensure that the CMake file (for example, `sherlock-custom.cmake`, as shown below) and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are located in the same folder named `build_utils`. This organization is essential for the successful execution of the compilation process.
 
+The following illustrates the proposed file structure. If you run `ls` and `ls -l build_utils/` commands in your working directory, you should see something like this:
 
-# Compilation of GEOS
+```
+[suid@sh04-ln04 login /home/groups/tchelepi/suid]$ ls
+build_utils  compile_geos.sh
 
-### Step 0: Loading the Necessary Modules
-
-Before starting the compilation, load the necessary modules:
-
-```bash
-module load system devel math
-module load git/2.45.1 git-lfs/2.4.0 cmake/3.24.2 ninja/1.9.0 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
+[suid@sh04-ln04 login /home/groups/tchelepi/suid]$ ls -l build_utils/
+total 96
+-rw-r--r-- 1 suid tchelepi  565 Jan 24 18:07 clone.sh
+-rw-r--r-- 1 suid tchelepi 1424 Jan 24 18:46 geos.sh
+-rw-r--r-- 1 suid tchelepi 2103 Jan 24 18:38 sherlock-custom.cmake
+-rw-r--r-- 1 suid tchelepi 1380 Jan 24 18:46 tpls.sh
 ```
 
-For more information on modules, see [Sherlock Modules Documentation](https://www.sherlock.stanford.edu/docs/software/modules/).
+## Compilation Steps
 
-### Step 1: Cloning the Sources
-
-Clone the required repositories and initialize the submodules:
+### Main Step: Execute the Compile Script
+The compile_geos.sh script executes the compilation process:
 
 ```bash
+source compile_geos.sh
+```
+
+This script orchestrates the compilation process by calling other scripts in a defined order:
+1. Clone the Sources
+2. Compile TPLs
+3. Compile GEOS
+
+### Step 1: Clone the Sources
+The **`clone.sh`** script is responsible for fetching the required repositories and initializing the necessary submodules. The script performs the following actions:
+
+- It loads the appropriate modules for Git.
+- It clones the Third-Party Libraries (`thirdPartyLibs`) and the GEOS source code.
+- It initializes the Git Large File Storage (LFS) and updates the submodules.
+
+**Content of `clone.sh`:**
+
+```bash
+#!/bin/bash
+# Load necessary modules
+module load system
+module load git/2.45.1 git-lfs/2.4.0
+
+# Clone the sources
 GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/thirdPartyLibs.git
-cd thirdPartyLibs
+cd thirdPartyLibs || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
 git lfs install
 git pull
 git submodule init
@@ -36,23 +60,60 @@ git submodule update
 cd ..
 
 GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/GEOS.git
-cd GEOS
+cd GEOS || { echo "Failed to enter GEOS directory"; exit 1; }
 git lfs install
 git submodule init
 git submodule update
 cd ..
 ```
 
-### Step 2: Configure TPLs
+### Step 2: Compile TPLs
+The **`tpls.sh`** script configures and compiles the Third-Party Libraries. This involves copying a custom configuration file and executing the build commands:
 
-The following is an example CMake configuration file named `sherlock-custom.cmake`. This file maps some of the loaded modules to configure TPLs (Third-Party Libraries) and GEOS.
+- It loads the necessary modules.
+- It copies the CMake configuration file (`sherlock-custom.cmake`) into the appropriate directory for GEOS.
+- It executes the `config-build.py` script to configure TPLs for Debug builds before running `make` to compile them.
+
+**Content of `tpls.sh`:**
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=tpls_job        # Name of the job
+#SBATCH --output=tpls_output.log  # Output log file 
+#SBATCH --error=tpls_error.log    # Error log file 
+#SBATCH --nodes=1                  # Use one node
+#SBATCH --ntasks=1                 # Number of tasks (usually for MPI, set to 1 for non-MPI)
+#SBATCH --cpus-per-task=4          # Request 4 CPU cores
+#SBATCH --mem=16G                   # Request 16 GB of memory
+#SBATCH --time=02:00:00            # Set a time limit of 2.0 hours
+#SBATCH --partition=dev            # Specify the partition
+
+# Email notifications
+#SBATCH --mail-type=END,FAIL       # Email notifications for job completion and failure
+#SBATCH --mail-user=suid@stanford.edu    # Replace with your email address
+
+# Load necessary modules
+module load system devel math
+module load cmake/3.24.2 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
+
+# Step 2: Configure TPLs
+cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
+cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
+python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -DNUM_PROC=4
+
+# Step 3: Compile TPLs Debug
+cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
+make
+cd ../..
+```
+
+The following is an example CMake configuration file `sherlock-custom.cmake`. This file maps some of the loaded modules to configure TPLs (Third-Party Libraries) and GEOS. For completeness, the file `sherlock-custom.cmake` is provided as an example. However, please note that you can use other configuration files located in [GEOS/host-configs](https://github.com/GEOS-DEV/GEOS/tree/develop/host-configs).
 
 ```cmake
 # Custom Configuration
 set(CONFIG_NAME "sherlock-custom" CACHE PATH "")
-set(LLVM_ROOT "/share/software/user/open/llvm/17.0.6" CACHE PATH "")
+set(GCC_ROOT "/share/software/user/open/gcc/12.4.0" CACHE PATH "")
 set(MPI_ROOT "/share/software/user/open/openmpi/5.0.5" CACHE PATH "")
-set(OPENBLAS_ROOT  "/share/software/user/open/openblas/0.3.28" CACHE PATH "")
 set(BLAS_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/libblas.so" CACHE STRING "")
 set(LAPACK_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/liblapack.so" CACHE STRING "")
 
@@ -60,11 +121,9 @@ set(LAPACK_LIBRARIES "/share/software/user/open/openblas/0.3.28/lib/liblapack.so
 site_name(HOST_NAME)
 
 # Compiler Settings
-set(CMAKE_C_COMPILER       "${LLVM_ROOT}/bin/clang"      CACHE PATH "")
-set(CMAKE_CXX_COMPILER     "${LLVM_ROOT}/bin/clang++"      CACHE PATH "")
-
-# OpenMP Options
-set(ENABLE_OPENMP ON CACHE BOOL "")
+set(CMAKE_C_COMPILER       "${GCC_ROOT}/bin/gcc"      CACHE PATH "")
+set(CMAKE_CXX_COMPILER     "${GCC_ROOT}/bin/g++"      CACHE PATH "")
+set(CMAKE_Fortran_COMPILER "${GCC_ROOT}/bin/gfortran" CACHE PATH "")
 
 # MPI Options
 set(ENABLE_MPI ON CACHE PATH "" FORCE)
@@ -111,143 +170,85 @@ python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custo
 cd ..
 ```
 
-### Step 3: Compile TPLs in Debug mode
+### Step 3: Configure GEOS
+The **`geos.sh`** script takes care of configuring and compiling the GEOS simulator itself. It performs these tasks:
 
-```bash
-cd build-sherlock-custom-debug/
-make
-cd ..
-```
+- It loads the necessary modules (the same as for the TPLs).
+- It retrieves the absolute path for the TPLs installation.
+- It executes the `config-build.py` script for GEOS, linking it to the previously built TPLs.
+- Finally, it compiles GEOS using `make -j`.
 
-### Step 4: Configure GEOS
-
-```
-cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
-
-# Get absolute path for TPls installations
-tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
-
-python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja -D GEOS_TPL_DIR="$tpls_path"
-
-```
-
-### Step 5: Compile GEOS
-```
-# get number of cpu
-cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
-
-cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make -j "$cpu_count"
-cd ../..
-```
-
-## Creating an SBATCH Script
-
-This procedure can be combined into a `compile_geos.sbatch ` script to request resources and execute the steps above sequentially. Below is an example of how the sbatch script should look:
+**Content of `geos.sh`:**
 
 ```bash
 #!/bin/bash
-#SBATCH --job-name=compile_geos        # Name of the job
-#SBATCH --output=job_geos_output_%j.log  # Output log file (%j will be replaced by job ID)
-#SBATCH --error=job_geos_error_%j.log    # Error log file (%j will be replaced by job ID)
-#SBATCH --nodes=1                         # Use one node
-#SBATCH --ntasks=1                        # Number of tasks (usually for MPI, set to 1 for non-MPI)
-#SBATCH --cpus-per-task=4                 # Request 4 CPU cores
-#SBATCH --mem=16G                          # Request 16 GB of memory
-#SBATCH --time=03:00:00                   # Set a time limit of 3.0 hours
-#SBATCH --partition=dev                # Specify the partition
+#SBATCH --job-name=geos_job         # Name of the job
+#SBATCH --output=geos_output.log  # Output log file 
+#SBATCH --error=geos_error.log    # Error log file 
+#SBATCH --nodes=1                  # Use one node
+#SBATCH --ntasks=1                 # Number of tasks (usually for MPI, set to 1 for non-MPI)
+#SBATCH --cpus-per-task=4          # Request 4 CPU cores
+#SBATCH --mem=16G                   # Request 16 GB of memory
+#SBATCH --time=02:00:00            # Set a time limit of 2.0 hours
+#SBATCH --partition=dev            # Specify the partition
+
 # Email notifications
-#SBATCH --mail-type=END,FAIL              # Email notifications for job completion and failure
-#SBATCH --mail-user=suid@stanford.edu   # Replace with your email address
+#SBATCH --mail-type=END,FAIL       # Email notifications for job completion and failure
+#SBATCH --mail-user=suid@stanford.edu    # Replace with your email address
 
-# Step 0: Load the necessary modules
+# Load necessary modules
 module load system devel math
-module load git/2.45.1 git-lfs/2.4.0 cmake/3.24.2 ninja/1.9.0 llvm/17.0.6 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
-
-# Step 1: Clone the sources
-GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/thirdPartyLibs.git
-cd thirdPartyLibs || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-git lfs install
-git pull
-git submodule init
-git submodule update
-cd ..
-
-GIT_CLONE_PROTECTION_ACTIVE=false git clone https://github.com/GEOS-DEV/GEOS.git
-cd GEOS || { echo "Failed to enter GEOS directory"; exit 1; }
-git lfs install
-git submodule init
-git submodule update
-cd ..
-
-# Step 2: Configure TPLs
-
-# get number of cpu
-cpu_count=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
-
-cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
-cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-python3 scripts/config-build.py -hc ../GEOS/host-configs/Stanford/sherlock-custom.cmake -bt Debug -DNUM_PROC="$cpu_count"
-
-# Step 3: Compile TPLs Debug
-cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make
-cd ../..
+module load cmake/3.24.2 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
 
 # Step 4: Configure GEOS
 cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 
-# Get absolute path for TPls installations
+# Get absolute path for TPLs installation
 tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
-python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -n --ninja -D GEOS_TPL_DIR="$tpls_path"
+python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path"
 
 # Step 5: Compile GEOS Debug
-
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-ninja -j "$cpu_count"
+make -j 4
 cd ../..
 ```
-## Compiling GEOS with a SBATCH Script
 
+## Compiling GEOS
 
-The `compile_geos.sbatch` file automates the build process. Before running it, create in the same directory a `build_utils` folder that contains `sherlock-custom.cmake`. To execute the script, run:
-
-```bash
-sbatch compile_geos.sbatch
-```
-It will create a unique identifier for the process (for instance, 58367115) for further reference.
-
-You will receive an email confirmation upon the completion or failure of the job. Below is an example of a typical email notification:
+The `compile_geos.sh` file combines the above steps into a unified process. It handles the sequence and dependencies between the jobs via the flag `--dependency`:
 
 ```bash
-Job ID: 58367115
-Cluster: sherlock
-User/Group: suid/tchelepi
-State: COMPLETED (exit code 0)
-Nodes: 1
-Cores per node: 4
-CPU Utilized: 03:59:10
-CPU Efficiency: 67.18% of 05:56:00 core-walltime
-Job Wall-clock time: 01:29:00
-Memory Utilized: 3.32 GB
-Memory Efficiency: 41.52% of 8.00 GB
+# Clone sources
+source build_utils/clone.sh
+
+# Submit the first job for TPLs compilation
+tpls_id=$(sbatch build_utils/tpls.sh | awk '{print $4}')
+
+# Submit the GEOS compilation job with a dependency on the TPLs job
+sbatch --dependency=afterok:$tpls_id build_utils/geos.sh
 ```
 
-To monitor the output of the process, if it is still active, you may connect to Sherlock at any time and execute the following command:
+The GEOS compilation will be submitted only if the TPL job succeeds. This allows us to rapidly allocate small resources in the form of a `dev` partition. See [Sherlock documentation](https://www.sherlock.stanford.edu/docs/user-guide/running-jobs/?h=sh_part#available-resources) for available resources and types of partitions.
+
+### Execution
+To begin the entire process, simply run:
 
 ```bash
-tail -f job_tpls_output_58367115.log
+source compile_geos.sh
 ```
 
+This will initiate the compilation while managing job dependencies. You will receive email notifications regarding job completion or failure.
 
-## Summary GEOS compilation 
-At this point, you have successfully compiled the GEOS on Sherlock cluster, by employing command line tools in conjunction with various concepts related to SLURM (Simple Linux Utility for Resource Management). Note that this guide does not cover the installation of different versions of dependencies or GPU-based compilation. However, those processes would involve similar operations as described along the sections of this document.
+### Monitoring Progress
+To monitor the output while the compilation is in progress, use the following command:
 
+```bash
+tail -f geos_output.log
+```
 
-## Bibliography 
+## Conclusion
+You have successfully compiled the GEOS simulator on the Sherlock cluster using this guide. The process effectively employs SLURM's resource management capabilities to streamline job execution in sequence. For advanced usage, additional configurations and modifications may be required based on specific project needs.
 
-- [GEOSX Documentation](https://geosx-geosx.readthedocs-hosted.com/en/latest/#)  
-  https://geosx-geosx.readthedocs-hosted.com/en/latest/#
-
-- [Sherlock Documentation](https://www.sherlock.stanford.edu/docs/)  
-  https://www.sherlock.stanford.edu/docs/
+## References
+- [GEOSX Documentation](https://geosx-geosx.readthedocs-hosted.com/en/latest/#)
+- [Sherlock Documentation](https://www.sherlock.stanford.edu/docs/)
