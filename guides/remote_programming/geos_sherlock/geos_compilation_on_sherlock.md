@@ -251,13 +251,13 @@ cd ../..
 The `compile_geos.sh` file automates the build process and use the concept of dependency in SLURM to excecute each job only after it is completed. 
 
 ```
-# Submit the first job and capture its job ID
-clone_id=$(sbatch build_utils/clone.sh | awk '{print $4}')
+# Clone sources
+source build_utils/clone.sh
+
+# Submit the first job
+tpls_id=$(sbatch build_utils/tpls.sh | awk '{print $4}')
 
 # Submit the second job with a dependency on the first job
-tpls_id=$(sbatch --dependency=afterok:$clone_id build_utils/tpls.sh | awk '{print $4}')
-
-# Submit the third job with a dependency on the second job
 sbatch --dependency=afterok:$tpls_id build_utils/geos.sh
 ```
 
