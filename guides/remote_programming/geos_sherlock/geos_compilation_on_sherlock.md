@@ -4,7 +4,7 @@
 This guide provides a step-by-step process for compiling the GEOS simulator on the Stanford Sherlock cluster. The compilation involves both the Third-Party Libraries (TPLs) and the GEOS simulator itself. These steps can be executed using a script that submits two jobs: one for the compilation of TPLs and a second for the compilation of GEOS.
 
 ### Important Note
-Ensure that the `cmake` file (for example, `sherlock-custom.cmake`, as shown in the example provided below) and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are placed in the same folder named `build_utils`. This organization is crucial for the successful execution of the compilation process.
+Ensure that the `cmake` file (for example, `sherlock-custom.cmake`, as provided below) and the shell scripts (`clone.sh`, `tpls.sh`, `geos.sh`) are placed in the same folder named `build_utils`. This organization is crucial for the successful execution of the compilation process.
 
 ## Compilation Steps
 
@@ -213,7 +213,7 @@ tpls_id=$(sbatch build_utils/tpls.sh | awk '{print $4}')
 sbatch --dependency=afterok:$tpls_id build_utils/geos.sh
 ```
 
-The GEOS compilation will be submitted only if the TPL job succeeds. In this manner, we can allocate resources from a partition of the type dev. See [Sherlock documentation](https://www.sherlock.stanford.edu/docs/user-guide/running-jobs/?h=sh_part#available-resources) for available resources and types of partitions.
+The GEOS compilation will be submitted only if the TPL job succeeds. This allows us to rapidly allocate small resources in the form of a `dev` partition. See [Sherlock documentation](https://www.sherlock.stanford.edu/docs/user-guide/running-jobs/?h=sh_part#available-resources) for available resources and types of partitions.
 
 ### Execution
 To begin the entire process, simply run:
