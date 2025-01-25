@@ -154,7 +154,6 @@ Below is an example of how the scripts should look:
 
 ```
 #!/bin/bash
-
 # Load necessary modules
 module load system 
 module load git/2.45.1 git-lfs/2.4.0
@@ -253,10 +252,8 @@ The `compile_geos.sh` file automates the build process and use the concept of de
 ```
 # Clone sources
 source build_utils/clone.sh
-
 # Submit the first job
 tpls_id=$(sbatch build_utils/tpls.sh | awk '{print $4}')
-
 # Submit the second job with a dependency on the first job
 sbatch --dependency=afterok:$tpls_id build_utils/geos.sh
 ```
