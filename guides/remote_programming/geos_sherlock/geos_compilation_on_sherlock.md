@@ -247,12 +247,15 @@ cd ../..
 module load system devel math
 module load cmake/3.24.2 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 cuda/12.6.1
 
-# Step 2: Configure TPLs
-cp build_utils/sherlock-custom.cmake GEOS/host-configs/Stanford/.
-cd thirdPartyLibs/ || { echo "Failed to enter thirdPartyLibs directory"; exit 1; }
-python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -DNUM_PROC=4
+# Step 4: Configure GEOS
+cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 
-# Step 3: Compile TPLs Debug
+# Get absolute path for TPls installations
+tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
+python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path"
+
+# Step 5: Compile GEOS Debug
+
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
 make -j 4
 cd ../..
