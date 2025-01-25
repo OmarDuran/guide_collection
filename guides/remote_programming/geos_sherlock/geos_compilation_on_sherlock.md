@@ -9,7 +9,7 @@ Ensure that the `cmake` file (for example, `sherlock-custom.cmake`, as shown in 
 ## Compilation Steps
 
 ### Main Step: Execute the Compile Script
-Begin the compilation process by executing the `compile_geos.sh` script:
+The compile_geos.sh script executes the compilation process:
 
 ```bash
 source compile_geos.sh
