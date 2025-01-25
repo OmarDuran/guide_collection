@@ -202,7 +202,7 @@ python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake 
 # Step 5: Compile GEOS Debug
 
 cd build-sherlock-custom-debug/ || { echo "Failed to enter build-sherlock-custom-debug directory"; exit 1; }
-make -j "$cpu_count"
+make -j 4
 cd ../..
 ```
 ## Compiling GEOS with a SBATCH Script
