@@ -250,7 +250,7 @@ module load cmake/3.24.2 gcc/12.4.0 python/3.12.1 openmpi/5.0.5 openblas/0.3.28 
 # Step 4: Configure GEOS
 cd GEOS/ || { echo "Failed to enter GEOS directory"; exit 1; }
 
-# Get absolute path for TPls installations
+# Get absolute path for TPls installation
 tpls_path=$(realpath ../thirdPartyLibs/install-sherlock-custom-debug/)
 python3 scripts/config-build.py -hc host-configs/Stanford/sherlock-custom.cmake -bt Debug -D GEOS_TPL_DIR="$tpls_path"
 
