@@ -217,6 +217,8 @@ cd ../..
 
 The `compile_geos.sh` file combines the above steps into a unified process. It handles the sequence and dependencies between the jobs via the flag `--dependency`:
 
+**Content of `compile_geos.sh`:**
+
 ```bash
 # Clone sources
 source build_utils/clone.sh
