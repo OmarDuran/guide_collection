@@ -107,7 +107,7 @@ make
 cd ../..
 ```
 
-The following is an example CMake configuration file `sherlock-custom.cmake`. This file maps some of the loaded modules to configure TPLs (Third-Party Libraries) and GEOS. For completeness, the file `sherlock-custom.cmake` is provided as an example. However, please note that you can use other configuration files located in [GEOS/host-configs](https://github.com/GEOS-DEV/GEOS/tree/develop/host-configs).
+The following is an example CMake configuration file `sherlock-custom.cmake`. This file maps some of the loaded modules to configure TPLs (Third-Party Libraries) and GEOS. For completeness, the file `sherlock-custom.cmake` is provided as an example. However, please note that you can use other configuration files located in [GEOS/host-configs/Stanford](https://github.com/GEOS-DEV/GEOS/tree/develop/host-configs/Stanford).
 
 ```cmake
 # Custom Configuration
